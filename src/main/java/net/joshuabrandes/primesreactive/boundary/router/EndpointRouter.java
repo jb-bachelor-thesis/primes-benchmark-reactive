@@ -20,6 +20,6 @@ public class EndpointRouter {
 
     @Bean
     RouterFunction<ServerResponse> getPrimes() {
-        return route(GET("v1/prime/{max-value)"), endpointHandler::countPrimes);
+        return route(GET("/v1/prime/{max-value})"), endpointHandler::countPrimes);
     }
 }
