@@ -10,6 +10,8 @@ import java.util.Random;
 @Component
 public class MatrixHandler {
 
+    public static final int MULTIPLICATION_LIMIT = 40;
+
     private final Random random = new Random();
 
     public Mono<ServerResponse> matrixStressTest(ServerRequest request) {
@@ -21,10 +23,13 @@ public class MatrixHandler {
                     var matrix1 = generateMatrix(n);
                     var matrix2 = generateMatrix(n);
 
+                    /*
                     return Mono.just(matrix1)
                             .expand(current -> Mono.just(multiplyMatrix(current, matrix2)))
-                            .take(100)
+                            .take(MULTIPLICATION_LIMIT)
                             .last();
+                     */
+                    return Mono.just(stressTest(matrix1, matrix2));
                 })
                 .flatMap(matrix -> ServerResponse.ok().bodyValue(reduceMatrix(matrix)));
     }
@@ -53,6 +58,15 @@ public class MatrixHandler {
                 }
                 result[i][j] = sum;
             }
+        }
+
+        return result;
+    }
+
+    private double[][] stressTest(double[][] matrix1, double[][] matrix2) {
+        var result = matrix1;
+        for (int i = 0; i < MULTIPLICATION_LIMIT; i++) {
+            result = multiplyMatrix(result, matrix2);
         }
 
         return result;
